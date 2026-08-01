@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EACCo FMS{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Fixed Top Navbar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <button class="burger-btn" id="burgerBtn" title="Toggle Sidebar" aria-label="Toggle sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="6" x2="20" y2="6"/>
+                    <line x1="4" y1="12" x2="20" y2="12"/>
+                    <line x1="4" y1="18" x2="20" y2="18"/>
+                </svg>
+            </button>
+            <div class="branding">
+                <!-- Updated Building Logo -->
+                <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Building base -->
+                    <rect x="15" y="20" width="70" height="65" rx="6" fill="none" stroke="#B6B6B4" stroke-width="6"/>
+                    <!-- Roof -->
+                    <polygon points="10,20 50,2 90,20" fill="none" stroke="#B6B6B4" stroke-width="6" stroke-linejoin="round"/>
+                    <!-- Windows (grid) -->
+                    <rect x="30" y="32" width="12" height="12" rx="2" fill="#6c6c6a"/>
+                    <rect x="58" y="32" width="12" height="12" rx="2" fill="#6c6c6a"/>
+                    <rect x="30" y="52" width="12" height="12" rx="2" fill="#6c6c6a"/>
+                    <rect x="58" y="52" width="12" height="12" rx="2" fill="#6c6c6a"/>
+                    <!-- Door -->
+                    <rect x="42" y="65" width="16" height="20" rx="3" fill="#3b3b3a" stroke="#B6B6B4" stroke-width="2"/>
+                    <!-- EACCo text -->
+                    <text x="50" y="95" text-anchor="middle" fill="#B6B6B4" font-family="Arial, sans-serif" font-weight="800" font-size="12" letter-spacing="1">EACCo</text>
+                </svg>
+                <div>
+                    <div class="brand-text">Erfaan Amanzai</div>
+                    <div class="brand-sub">Construction Co.</div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Right side: date + user profile -->
+        <div class="navbar-right">
+            <div class="date-display">
+                <span class="calendar-dot"></span>
+                <span class="shamsi-date" id="shamsiDate">Loading...</span>
+                <span class="gregorian-date" id="gregorianDate"></span>
+            </div>
+            <div class="user-profile" id="userProfileBtn">
+                <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
+                <div>
+                    <div class="user-name">{{ user.get_full_name|default:user.username }}</div>
+                    <div class="user-role">{{ user.get_role_display }}</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Collapsible Sidebar -->
+    <!-- Collapsible Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+        <!-- Dashboard -->
+        <a href="{% url 'dashboard' %}" class="sidebar-item {% if request.resolver_match.view_name == 'dashboard' %}active{% endif %}">
+            <span class="s-icon"><i class="fas fa-chart-pie"></i></span>
+            <span class="s-label">Dashboard</span>
+        </a>
+
+        <!-- Projects -->
+        <a href="{% url 'project_list' %}" class="sidebar-item {% if 'project' in request.resolver_match.view_name %}active{% endif %}">
+            <span class="s-icon"><i class="fas fa-folder-open"></i></span>
+            <span class="s-label">Projects</span>
+        </a>
+
+        <!-- Expenses -->
+        <a href="{% url 'expense_list' %}" class="sidebar-item {% if 'expense' in request.resolver_match.view_name %}active{% endif %}">
+            <span class="s-icon"><i class="fas fa-receipt"></i></span>
+            <span class="s-label">Expenses</span>
+        </a>
+
+        <!-- Cash Flow with submenu -->
+        <div class="sidebar-item has-submenu" id="cashflowMenu">
+            <span class="s-icon"><i class="fas fa-money-bill-wave"></i></span>
+            <span class="s-label">Cash Flow</span>
+            <span class="submenu-arrow">▼</span>
+        </div>
+        <div class="submenu" id="cashflowSubmenu">
+            <a href="{% url 'cash_in_list' %}" class="sidebar-item {% if 'cash-in' in request.path %}active{% endif %}">
+                <span class="s-icon"><i class="fas fa-arrow-circle-down" style="color:#4caf50;"></i></span>
+                <span class="s-label">Cash IN</span>
+            </a>
+            <a href="{% url 'cash_out_list' %}" class="sidebar-item {% if 'cash-out' in request.path %}active{% endif %}">
+                <span class="s-icon"><i class="fas fa-arrow-circle-up" style="color:#e57373;"></i></span>
+                <span class="s-label">Cash OUT</span>
+            </a>
+        </div>
+
+        <!-- Reports -->
+        <a href="{% url 'report_view' %}" class="sidebar-item {% if 'report' in request.resolver_match.view_name %}active{% endif %}">
+            <span class="s-icon"><i class="fas fa-file-alt"></i></span>
+            <span class="s-label">Reports</span>
+        </a>
+    </nav>
+
+    <!-- Settings (Admin only) and Logout -->
+    <div class="sidebar-bottom">
+        {% if user.role == 'ADMIN' or user.is_superuser %}
+        <a href="{% url 'admin:index' %}" class="sidebar-item" target="_blank">
+            <span class="s-icon"><i class="fas fa-cog"></i></span>
+            <span class="s-label">Settings</span>
+        </a>
+        {% endif %}
+
+        <form action="{% url 'logout' %}" method="post" style="display: contents;">
+            {% csrf_token %}
+            <button type="submit" class="sidebar-item" style="width:100%; border:none; background:none; cursor:pointer; font-family:inherit; color:inherit; text-align:left;">
+                <span class="s-icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span class="s-label">Logout</span>
+            </button>
+        </form>
+    </div>
+</aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

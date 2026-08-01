@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EACCo Report</title>
+    <style>
+        @page { size: A4 landscape; margin: 1cm; }
+        body { font-family: 'Tahoma', sans-serif; font-size: 12px; }
+        h1 { color: #1d1d1d; border-bottom: 2px solid #1d1d1d; padding-bottom: 4px; }
+        h2 { color: #3b3b3a; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #3b3b3a; color: white; padding: 6px; text-align: left; }
+        td { padding: 5px; border-bottom: 1px solid #ccc; }
+        .in { color: #2e7d32; font-weight: bold; }
+        .out { color: #b84c3b; font-weight: bold; }
+        .filters { margin-bottom: 20px; color: #6c6c6a; }
+    </style>
+</head>
+<body>
+    <h1>EACCo Financial Report</h1>
+    <div class="filters">
+        {% if filters.project %}Project: {{ filters.project.name }} | {% endif %}
+        {% if filters.start_date %}From: {{ filters.start_date }} | {% endif %}
+        {% if filters.end_date %}To: {{ filters.end_date }}{% endif %}
+    </div>
+
+    <h2>Incomes</h2>
+    <table>
+        <thead><tr><th>Date</th><th>Project</th><th>Description</th><th>Amount</th></tr></thead>
+        <tbody>
+            {% for inc in incomes %}
+            <tr>
+                <td>{{ inc.date }}</td>
+                <td>{{ inc.project.name }}</td>
+                <td>{{ inc.description|default:"—" }}</td>
+                <td class="in">AFN {{ inc.amount|floatformat:0 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No incomes.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Expenses</h2>
+    <table>
+        <thead><tr><th>Date</th><th>Project</th><th>Category</th><th>Description</th><th>Amount</th></tr></thead>
+        <tbody>
+            {% for exp in expenses %}
+            <tr>
+                <td>{{ exp.date }}</td>
+                <td>{{ exp.project.name }}</td>
+                <td>{{ exp.category.name|default:"—" }}</td>
+                <td>{{ exp.description|truncatechars:30 }}</td>
+                <td class="out">AFN {{ exp.amount|floatformat:0 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No expenses.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

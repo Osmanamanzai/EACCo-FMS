@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.name }} - EACCo{% endblock %}
+
+{% block content %}
+<div class="project-detail">
+
+  <!-- Header Card with Status & Actions -->
+  <div class="detail-header">
+    <div class="header-info">
+      <h1 class="project-name">{{ project.name }}</h1>
+      <span class="status-badge {% if project.status == 'ACTIVE' %}status-active{% elif project.status == 'COMPLETED' %}status-completed{% else %}status-onhold{% endif %}">
+        <i class="fas {% if project.status == 'ACTIVE' %}fa-play-circle{% elif project.status == 'COMPLETED' %}fa-check-circle{% else %}fa-pause-circle{% endif %}"></i>
+        {{ project.get_status_display }}
+      </span>
+    </div>
+    <div class="header-actions">
+      <a href="{% url 'project_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Projects</a>
+      {% if user.role == 'ADMIN' or user.is_superuser %}
+        <a href="{% url 'project_update' project.pk %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="detail-grid">
+
+    <!-- Left Column: Project Details -->
+    <div class="detail-card">
+      <h3 class="card-title"><i class="fas fa-info-circle"></i> Project Information</h3>
+      <div class="info-row">
+        <span class="info-label">Location</span>
+        <span class="info-value">{{ project.location }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Start Date</span>
+        <span class="info-value">{{ project.start_date|date:"Y-m-d" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">End Date</span>
+        <span class="info-value">{{ project.end_date|date:"Y-m-d"|default:"Not set" }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Budget</span>
+        <span class="info-value"><strong>AFN {{ project.budget|floatformat:0 }}</strong></span>
+      </div>
+      {% if project.description %}
+      <div class="info-row" style="flex-direction: column; align-items: flex-start;">
+        <span class="info-label">Description</span>
+        <p class="info-description">{{ project.description }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Right Column: Financial Summary (using pre-calculated totals) -->
+    <div class="detail-card">
+      <h3 class="card-title"><i class="fas fa-chart-bar"></i> Financial Summary</h3>
+      <div class="info-row">
+        <span class="info-label">Total Income</span>
+        <span class="info-value">AFN {{ total_income|floatformat:0 }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Total Expenses</span>
+        <span class="info-value">AFN {{ total_expense|floatformat:0 }}</span>
+      </div>
+      <div class="info-row" style="border-top:1px solid #e0e0dd; margin-top: 10px; padding-top: 10px;">
+        <span class="info-label">Profit / Loss</span>
+        <span class="info-value" style="font-weight:700; color: {% if profit >= 0 %}#2e7d32{% else %}#b84c3b{% endif %};">
+          AFN {{ profit|floatformat:0 }}
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Documents Section -->
+  <div class="detail-card" style="margin-top: 20px;">
+    <div class="documents-header">
+      <h3 class="card-title"><i class="fas fa-paperclip"></i> Documents ({{ documents.count }})</h3>
+      {% if is_admin %}
+        <button class="btn btn-primary" id="toggleUploadBtn">
+          <i class="fas fa-cloud-upload-alt"></i> Upload New Document
+        </button>
+      {% endif %}
+    </div>
+
+    <!-- Upload Form (hidden by default) -->
+    {% if is_admin %}
+    <form method="post" enctype="multipart/form-data" id="uploadForm" style="display: none; margin-bottom: 20px; padding: 16px; background: #f9f9f9; border-radius: 8px;">
+      {% csrf_token %}
+      <div class="form-row">
+        {{ doc_form.file }}
+        <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Upload</button>
+      </div>
+      {% if doc_form.errors %}
+        <div class="alert alert-error" style="margin-top:10px;">Invalid file. Please try again.</div>
+      {% endif %}
+    </form>
+    {% endif %}
+
+    <!-- Document List -->
+    {% if documents %}
+    <ul class="document-list">
+      {% for doc in documents %}
+      <li>
+        <i class="fas fa-file-pdf" style="color:#c0392b;"></i>
+        <span class="doc-name">{{ doc.file.name|slice:"17:" }}</span>
+        <span class="doc-date">{{ doc.uploaded_at|date:"Y-m-d H:i" }}</span>
+        <a href="{{ doc.file.url }}" class="btn btn-secondary btn-sm" download>
+          <i class="fas fa-download"></i> Download
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="no-data">No documents uploaded yet.</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Toggle upload form
+  const toggleBtn = document.getElementById('toggleUploadBtn');
+  const uploadForm = document.getElementById('uploadForm');
+  if (toggleBtn && uploadForm) {
+    toggleBtn.addEventListener('click', function() {
+      if (uploadForm.style.display === 'none') {
+        uploadForm.style.display = 'block';
+        toggleBtn.innerHTML = '<i class="fas fa-times"></i> Cancel';
+      } else {
+        uploadForm.style.display = 'none';
+        toggleBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Upload New Document';
+      }
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Delete Project - EACCo{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:500px;">
+    <div class="panel-header"><span class="panel-dot"></span> Confirm Delete</div>
+    <p>Are you sure you want to delete project <strong>{{ project.name }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" style="background:#b84c3b;">Yes, Delete</button>
+        <a href="{% url 'project_list' %}" class="btn btn-secondary" style="margin-left:8px;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

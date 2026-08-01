@@ -1,0 +1,134 @@
+:root {
+    --clr-light: #B6B6B4;
+    --clr-mid: #6c6c6a;
+    --clr-dark-mid: #3b3b3a;
+    --clr-dark: #1d1d1d;
+    --clr-bg: #f4f4f2;
+    --clr-white: #ffffff;
+    --font-main: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--clr-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: var(--clr-dark);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+}
+
+.login-card {
+    background: var(--clr-white);
+    border-radius: 12px;
+    padding: 40px 32px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--clr-dark-mid);
+}
+
+.branding {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.logo {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--clr-dark);
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+}
+
+.brand-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--clr-dark-mid);
+    letter-spacing: 0.02em;
+}
+
+.brand-sub {
+    font-size: 0.7rem;
+    color: var(--clr-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--clr-dark-mid);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d1cf;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: var(--font-main);
+    background: #fbfbfa;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--clr-mid);
+    box-shadow: 0 0 0 3px rgba(108, 108, 106, 0.15);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 13px;
+    background: var(--clr-dark);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background 0.25s;
+    margin-top: 8px;
+}
+
+.btn-login:hover {
+    background: #000000;
+}
+
+.error-message {
+    background: #fbe9e7;
+    color: #b84c3b;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    margin-bottom: 20px;
+    text-align: center;
+    border-left: 3px solid #b84c3b;
+}
+
+.footer-note {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--clr-mid);
+    margin-top: 28px;
+}

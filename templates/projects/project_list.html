@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Projects - EACCo{% endblock %}
+{% block content %}
+<div class="panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div class="panel-header" style="margin-bottom:0;">
+            <span class="panel-dot"></span> All Projects
+        </div>
+        {% if user.role == 'ADMIN' or user.is_superuser %}
+        <a href="{% url 'project_create' %}" class="btn btn-primary">+ New Project</a>
+        {% endif %}
+    </div>
+    <table class="tx-table">
+        <thead>
+            <tr>
+                <th>Project Name</th>
+                <th>Location</th>
+                <th>Budget</th>
+                <th>Start Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for proj in projects %}
+            <tr>
+                <td><a href="{% url 'project_detail' proj.pk %}" style="color:var(--clr-dark); font-weight:600;">{{ proj.name }}</a></td>
+                <td>{{ proj.location }}</td>
+                <td>AFN {{ proj.budget|floatformat:0 }}</td>
+                <td>{{ proj.start_date }}</td>
+                <td>
+                    <span class="tx-badge {% if proj.status == 'ACTIVE' %}in{% elif proj.status == 'COMPLETED' %}out{% else %}out{% endif %}">
+                        {{ proj.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'project_detail' proj.pk %}" style="margin-right:8px;">View</a>
+                    {% if user.role == 'ADMIN' or user.is_superuser %}
+                    <a href="{% url 'project_update' proj.pk %}" style="margin-right:8px;">Edit</a>
+                    <a href="{% url 'project_delete' proj.pk %}" style="color:#b84c3b;">Delete</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No projects yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

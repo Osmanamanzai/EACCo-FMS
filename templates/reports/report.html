@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Reports - EACCo{% endblock %}
+{% block content %}
+<div class="panel" style="margin-bottom:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div class="panel-header" style="margin-bottom:0;">
+            <span class="panel-dot"></span> Financial Report
+        </div>
+        <a href="{% url 'report_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-primary">
+            <i class="fas fa-download"></i> Download PDF
+        </a>
+    </div>
+
+    <!-- Filter form -->
+    <form method="get" style="display:flex; gap:10px; flex-wrap:wrap; align-items:end;">
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-secondary">Apply Filter</button>
+        <a href="{% url 'report_view' %}" class="btn btn-secondary">Clear</a>
+    </form>
+</div>
+
+<!-- Incomes Table -->
+<div class="panel" style="margin-bottom:20px;">
+    <div class="panel-header"><span class="panel-dot" style="background:#5c8a60;"></span> Incomes</div>
+    <table class="tx-table">
+        <thead>
+            <tr><th>Date</th><th>Project</th><th>Description</th><th>Amount</th></tr>
+        </thead>
+        <tbody>
+            {% for inc in incomes %}
+            <tr>
+                <td>{{ inc.date }}</td>
+                <td>{{ inc.project.name }}</td>
+                <td>{{ inc.description|default:"—" }}</td>
+                <td class="tx-amount in">AFN {{ inc.amount|floatformat:0 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No incomes found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Expenses Table -->
+<div class="panel">
+    <div class="panel-header"><span class="panel-dot" style="background:#b05a50;"></span> Expenses</div>
+    <table class="tx-table">
+        <thead>
+            <tr><th>Date</th><th>Project</th><th>Category</th><th>Description</th><th>Amount</th></tr>
+        </thead>
+        <tbody>
+            {% for exp in expenses %}
+            <tr>
+                <td>{{ exp.date }}</td>
+                <td>{{ exp.project.name }}</td>
+                <td>{{ exp.category.name|default:"—" }}</td>
+                <td>{{ exp.description|truncatechars:30 }}</td>
+                <td class="tx-amount out">AFN {{ exp.amount|floatformat:0 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No expenses found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
