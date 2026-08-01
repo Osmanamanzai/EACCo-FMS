@@ -4,6 +4,9 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 from accounts.views import dashboard
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.urls import re_path
+from django.views.static import serve
 
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='dashboard')),
@@ -15,6 +18,15 @@ urlpatterns = [
     path('expenses/', include('transactions.urls')),
     path('reports/', include('reports.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# For demo: serve media even in production
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+]
+
 from django.conf import settings
 from django.conf.urls.static import static
 
