@@ -11,7 +11,7 @@
         </a>
     </div>
 
-    <form method="get" style="display:flex; gap:10px; flex-wrap:wrap; align-items:end;">
+    <form method="get" class="filter-form">
         {{ form.as_p }}
         <button type="submit" class="btn btn-secondary">Apply Filter</button>
         <a href="{% url 'report_view' %}" class="btn btn-secondary">Clear</a>

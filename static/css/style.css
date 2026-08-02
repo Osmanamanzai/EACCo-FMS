@@ -469,3 +469,27 @@ form p label {
       font-size: 0.55rem;
   }
 }
+/* ---- Report filter form: inline fields + buttons ---- */
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.filter-form p {
+  display: flex;
+  flex-direction: column;
+  margin: 0 !important;
+  flex: 0 0 auto;
+}
+
+.filter-form p label {
+  margin-bottom: 3px;
+}
+
+.filter-form .btn {
+  align-self: flex-end;
+  height: max-content;
+  white-space: nowrap;
+}
