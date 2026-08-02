@@ -419,3 +419,53 @@ form p label {
       grid-template-columns: 1fr;
     }
   }
+  /* Mobile adjustments (up to 768px) */
+@media (max-width: 768px) {
+  /* Hide the branding block on mobile – only show burger, date, user */
+  .navbar-left .branding {
+      display: none;
+  }
+
+  /* Slightly reduce the date display size to prevent overflow */
+  .date-display {
+      font-size: 0.7rem;
+      padding: 4px 10px;
+  }
+  .shamsi-date {
+      font-size: 0.7rem;
+  }
+  .gregorian-date {
+      font-size: 0.6rem;
+  }
+
+  /* Ensure the user profile doesn't push off-screen */
+  .user-profile {
+      padding: 4px 8px;
+  }
+  .user-name {
+      font-size: 0.75rem;
+  }
+  .user-role {
+      font-size: 0.6rem;
+  }
+
+  /* Make all cards (panels) horizontally scrollable for tables */
+  .panel {
+      overflow-x: auto;
+  }
+}
+
+/* Extra small screens (up to 480px) */
+@media (max-width: 480px) {
+  /* Further reduce date display on very narrow screens */
+  .date-display {
+      font-size: 0.65rem;
+      gap: 4px;
+  }
+  .shamsi-date {
+      font-size: 0.65rem;
+  }
+  .gregorian-date {
+      font-size: 0.55rem;
+  }
+}
