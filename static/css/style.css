@@ -493,3 +493,49 @@ form p label {
   height: max-content;
   white-space: nowrap;
 }
+/* ----- Report Filter Form (row layout) ----- */
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-row label {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--clr-dark-mid);
+}
+
+.filter-row select,
+.filter-row input {
+  padding: 8px 12px;
+  border: 1px solid #d1d1cf;
+  border-radius: 6px;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  background: #fbfbfa;
+}
+
+/* Dates side-by-side */
+.filter-row-dates {
+  flex-direction: row;
+  gap: 16px;
+}
+
+.date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+}

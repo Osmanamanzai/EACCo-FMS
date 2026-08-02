@@ -11,13 +11,35 @@
         </a>
     </div>
 
+    <!-- Filter form with three rows -->
     <form method="get" class="filter-form">
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-secondary">Apply Filter</button>
-        <a href="{% url 'report_view' %}" class="btn btn-secondary">Clear</a>
+        <!-- Row 1: Project -->
+        <div class="filter-row">
+            <label for="{{ form.project.id_for_label }}">Project:</label>
+            {{ form.project }}
+        </div>
+
+        <!-- Row 2: Start & End dates -->
+        <div class="filter-row filter-row-dates">
+            <div class="date-group">
+                <label for="{{ form.start_date.id_for_label }}">Start Date:</label>
+                {{ form.start_date }}
+            </div>
+            <div class="date-group">
+                <label for="{{ form.end_date.id_for_label }}">End Date:</label>
+                {{ form.end_date }}
+            </div>
+        </div>
+
+        <!-- Row 3: Buttons -->
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-secondary">Apply Filter</button>
+            <a href="{% url 'report_view' %}" class="btn btn-secondary">Clear</a>
+        </div>
     </form>
 </div>
 
+<!-- Incomes Table (unchanged) -->
 <div class="panel" style="margin-bottom:20px;">
     <div class="panel-header"><span class="panel-dot" style="background:#5c8a60;"></span> Incomes</div>
     <table class="tx-table">
@@ -39,6 +61,7 @@
     </table>
 </div>
 
+<!-- Expenses Table (unchanged) -->
 <div class="panel">
     <div class="panel-header"><span class="panel-dot" style="background:#b05a50;"></span> Expenses</div>
     <table class="tx-table">
