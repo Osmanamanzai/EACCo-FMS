@@ -493,27 +493,48 @@ form p label {
   height: max-content;
   white-space: nowrap;
 }
-/* ----- Report Filter Form (row layout) ----- */
+/* ----- Report Filter Form (centered rows) ----- */
 .filter-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px; /* space between rows */
 }
 
+/* All rows use column layout by default, center their items */
 .filter-row {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 4px;
 }
 
+/* Second row (dates) – side by side, centered, small gap */
+.filter-row-dates {
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;  /* align labels & inputs at the bottom */
+  gap: 16px;              /* comfortable distance between the two date groups */
+}
+
+/* Each date group is a column (label above input) */
+.date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: auto;            /* don’t stretch */
+}
+
+/* Style the labels */
 .filter-row label {
   font-weight: 600;
   font-size: 0.8rem;
   color: var(--clr-dark-mid);
 }
 
-.filter-row select,
-.filter-row input {
+/* Project dropdown – fixed width, centered */
+.filter-row select {
+  width: 100%;
+  max-width: 400px;       /* not too wide */
   padding: 8px 12px;
   border: 1px solid #d1d1cf;
   border-radius: 6px;
@@ -522,20 +543,20 @@ form p label {
   background: #fbfbfa;
 }
 
-/* Dates side-by-side */
-.filter-row-dates {
-  flex-direction: row;
-  gap: 16px;
+/* Date inputs – smaller fixed width, keep them compact */
+.date-group input {
+  width: 160px;           /* narrow enough to keep them close */
+  padding: 8px 12px;
+  border: 1px solid #d1d1cf;
+  border-radius: 6px;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  background: #fbfbfa;
 }
 
-.date-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
+/* Button row – centered */
 .filter-actions {
   display: flex;
+  justify-content: center;
   gap: 10px;
 }
