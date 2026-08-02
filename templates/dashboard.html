@@ -5,7 +5,6 @@
 
 {% block content %}
 <section class="dashboard">
-    <!-- Top stat cards (unchanged) -->
     <div class="stats-row">
         <div class="stat-card revenue">
             <div class="stat-icon"><i class="fas fa-coins" style="color:#4caf50;"></i></div>
@@ -35,7 +34,6 @@
         </div>
     </div>
 
-    <!-- Middle section: chart + transactions -->
     <div class="dashboard-middle">
         <div class="panel">
             <div class="panel-header">
@@ -82,7 +80,6 @@
 
 {% block extra_js %}
 <script>
-    // This block is placed BEFORE main.js, so the variable is ready.
     window.dashboardChartData = {{ chart_data_json|safe }};
     console.log('Dashboard chart data:', window.dashboardChartData);
 </script>

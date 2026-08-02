@@ -6,7 +6,7 @@
 {% block content %}
 <div class="project-detail">
 
-  <!-- Header Card with Status & Actions -->
+  <!-- Header Card -->
   <div class="detail-header">
     <div class="header-info">
       <h1 class="project-name">{{ project.name }}</h1>
@@ -23,10 +23,7 @@
     </div>
   </div>
 
-  <!-- Main Content Grid -->
   <div class="detail-grid">
-
-    <!-- Left Column: Project Details -->
     <div class="detail-card">
       <h3 class="card-title"><i class="fas fa-info-circle"></i> Project Information</h3>
       <div class="info-row">
@@ -53,7 +50,6 @@
       {% endif %}
     </div>
 
-    <!-- Right Column: Financial Summary (using pre-calculated totals) -->
     <div class="detail-card">
       <h3 class="card-title"><i class="fas fa-chart-bar"></i> Financial Summary</h3>
       <div class="info-row">
@@ -71,10 +67,8 @@
         </span>
       </div>
     </div>
-
   </div>
 
-  <!-- Documents Section -->
   <div class="detail-card" style="margin-top: 20px;">
     <div class="documents-header">
       <h3 class="card-title"><i class="fas fa-paperclip"></i> Documents ({{ documents.count }})</h3>
@@ -85,7 +79,6 @@
       {% endif %}
     </div>
 
-    <!-- Upload Form (hidden by default) -->
     {% if is_admin %}
     <form method="post" enctype="multipart/form-data" id="uploadForm" style="display: none; margin-bottom: 20px; padding: 16px; background: #f9f9f9; border-radius: 8px;">
       {% csrf_token %}
@@ -99,7 +92,6 @@
     </form>
     {% endif %}
 
-    <!-- Document List -->
     {% if documents %}
     <ul class="document-list">
       {% for doc in documents %}
@@ -117,13 +109,11 @@
     <p class="no-data">No documents uploaded yet.</p>
     {% endif %}
   </div>
-
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Toggle upload form
   const toggleBtn = document.getElementById('toggleUploadBtn');
   const uploadForm = document.getElementById('uploadForm');
   if (toggleBtn && uploadForm) {

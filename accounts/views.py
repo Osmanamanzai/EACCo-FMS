@@ -6,6 +6,11 @@ from collections import defaultdict
 from transactions.models import Transaction
 import json
 
+SHAMSI_MONTHS = [
+    '', 'حمل', 'ثور', 'جوزا', 'سرطان', 'اسد', 'سنبله',
+    'میزان', 'عقرب', 'قوس', 'جدی', 'دلو', 'حوت'
+]
+
 def gregorian_to_shamsi_month(d):
     """Return (shamsi_year, shamsi_month) for a given Gregorian date."""
     nowruz = date(d.year, 3, 21)
@@ -25,19 +30,18 @@ def gregorian_to_shamsi_month(d):
 
 @login_required
 def dashboard(request):
-    # ---- totals ----
+    # totals
     income_total = Transaction.objects.filter(type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
     expense_total = Transaction.objects.filter(type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
     profit = income_total - expense_total
 
-    # ---- recent transactions ----
+    # recent transactions
     recent = Transaction.objects.select_related('project', 'category').order_by('-date', '-created_at')[:10]
 
-    # ---- monthly chart data (last 6 Shamsi months) ----
+    # monthly chart data (last 6 Shamsi months)
     today = date.today()
     sh_year, sh_month = gregorian_to_shamsi_month(today)
 
-    # generate list of (year, month) for last 6 months
     months_list = []
     for i in range(5, -1, -1):
         m = sh_month - i
@@ -47,12 +51,6 @@ def dashboard(request):
             y -= 1
         months_list.append((y, m))
 
-    SHAMSI_MONTHS = [
-    '', 'حمل', 'ثور', 'جوزا', 'سرطان', 'اسد', 'سنبله',
-    'میزان', 'عقرب', 'قوس', 'جدی', 'دلو', 'حوت'
-]
-
-    # aggregate amounts per (year, month)
     income_by_month = defaultdict(float)
     expense_by_month = defaultdict(float)
 
@@ -81,7 +79,7 @@ def dashboard(request):
     context = {
         'total_income': income_total,
         'total_expense': expense_total,
-        'profit': profit,
+        'profit': profit,                # ← now passed to template
         'recent_transactions': recent,
         'chart_data_json': chart_json,
     }
