@@ -568,3 +568,14 @@ form p label {
 .panel {
   overflow-x: auto;
 }
+/* Force transaction tables to be scrollable on small screens */
+.panel {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+}
+
+/* Give the table a minimum width so columns don't squeeze */
+.panel table {
+  min-width: 700px; /* adjust if needed */
+  white-space: nowrap;
+}

@@ -106,4 +106,23 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.dashboardChartData) {
         window.buildChart(window.dashboardChartData);
     }
+    // Make tables horizontally scrollable by dragging (mobile)
+document.querySelectorAll('.panel').forEach(panel => {
+    let isDown = false, startX, scrollLeft;
+    panel.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - panel.offsetLeft;
+        scrollLeft = panel.scrollLeft;
+        panel.style.cursor = 'grabbing';
+    });
+    panel.addEventListener('mouseleave', () => { isDown = false; panel.style.cursor = ''; });
+    panel.addEventListener('mouseup', () => { isDown = false; panel.style.cursor = ''; });
+    panel.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - panel.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        panel.scrollLeft = scrollLeft - walk;
+    });
+});
 });
