@@ -35,6 +35,7 @@
         </thead>
         <tbody>
             {% for exp in expenses %}
+            <!-- Data row -->
             <tr>
                 <td>{{ exp.date }}</td>
                 <td>{{ exp.project.name }}</td>
@@ -47,13 +48,21 @@
                     {% else %}
                         —
                     {% endif %}
-                    {% if user.is_admin or user.is_superuser %}
-                        <br>
-                        <a href="{% url 'transaction_update' exp.pk %}" title="Edit"><i class="fas fa-edit"></i> Edit</a>
-                        <a href="{% url 'transaction_delete' exp.pk %}" title="Delete" style="color:#b84c3b; margin-left:8px;"><i class="fas fa-trash-alt"></i> Del</a>
-                    {% endif %}
                 </td>
             </tr>
+            <!-- Admin actions row (centered) -->
+            {% if user.is_admin or user.is_superuser %}
+            <tr>
+                <td colspan="6" style="text-align: center; border-bottom: 2px solid #e0e0dd; padding: 8px 0;">
+                    <a href="{% url 'transaction_update' exp.pk %}" class="btn btn-secondary btn-sm" title="Edit">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'transaction_delete' exp.pk %}" class="btn btn-secondary btn-sm" title="Delete" style="color:#b84c3b; margin-left: 8px;">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </a>
+                </td>
+            </tr>
+            {% endif %}
             {% empty %}
             <tr><td colspan="6">No expenses found{% if selected_project %} for {{ selected_project.name }}{% endif %}.</td></tr>
             {% endfor %}
