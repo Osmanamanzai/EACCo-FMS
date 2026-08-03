@@ -45,13 +45,20 @@
                     {% else %}
                         —
                     {% endif %}
-                    {% if user.is_admin or user.is_superuser %}
-                        <br>
-                        <a href="{% url 'transaction_update' inc.pk %}" title="Edit"><i class="fas fa-edit"></i> Edit</a>
-                        <a href="{% url 'transaction_delete' inc.pk %}" title="Delete" style="color:#b84c3b; margin-left:8px;"><i class="fas fa-trash-alt"></i> Del</a>
-                    {% endif %}
                 </td>
             </tr>
+            {% if user.is_admin or user.is_superuser %}
+            <tr class="mobile-actions-row">
+                <td colspan="5">
+                    <a href="{% url 'transaction_update' inc.pk %}" class="btn btn-secondary btn-sm" title="Edit">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'transaction_delete' inc.pk %}" class="btn btn-secondary btn-sm" title="Delete" style="color:#b84c3b; margin-left: 8px;">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </a>
+                </td>
+            </tr>
+            {% endif %}
             {% empty %}
             <tr><td colspan="5">No cash IN entries found{% if selected_project %} for {{ selected_project.name }}{% endif %}.</td></tr>
             {% endfor %}

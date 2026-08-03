@@ -579,3 +579,18 @@ form p label {
   min-width: 700px; /* adjust if needed */
   white-space: nowrap;
 }
+/* Mobile‑only action row (hidden by default) */
+.mobile-actions-row {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-actions-row {
+      display: table-row;
+  }
+  .mobile-actions-row td {
+      text-align: center;
+      padding: 10px 0;
+      border-bottom: 2px solid #e0e0dd;
+  }
+}
