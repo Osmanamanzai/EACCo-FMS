@@ -560,3 +560,11 @@ form p label {
   justify-content: center;
   gap: 10px;
 }
+/* Make tables scrollable on small screens */
+.panel table {
+  min-width: 650px; /* prevents columns from collapsing too much */
+}
+
+.panel {
+  overflow-x: auto;
+}
