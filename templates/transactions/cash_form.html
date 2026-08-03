@@ -7,7 +7,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Save</button>
-        <a href="{% if 'cash-in' in request.path %}{% url 'cash_in_list' %}{% else %}{% url 'cash_out_list' %}{% endif %}" class="btn btn-secondary" style="margin-left:8px;">Cancel</a>
+        <a href="{% if cancel_url %}{{ cancel_url }}{% elif 'cash-in' in request.path %}{% url 'cash_in_list' %}{% else %}{% url 'cash_out_list' %}{% endif %}" class="btn btn-secondary" style="margin-left:8px;">Cancel</a>
     </form>
 </div>
 {% endblock %}

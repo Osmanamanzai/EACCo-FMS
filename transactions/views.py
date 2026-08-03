@@ -1,3 +1,5 @@
+from django.core.exceptions import PermissionDenied
+from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -79,37 +81,52 @@ def cash_in_add(request):
 
 # ---------- Cash OUT views ----------
 @login_required
-def cash_out_list(request):
-    project_id = request.GET.get('project', '')
-    projects = Project.objects.all()
-    expenses = Transaction.objects.filter(type=Transaction.Type.EXPENSE)
+def transaction_update(request, pk):
+    if not (request.user.is_admin() or request.user.is_superuser):
+        raise PermissionDenied
 
-    selected_project = None
-    if project_id:
-        expenses = expenses.filter(project_id=project_id)
-        selected_project = Project.objects.filter(pk=project_id).first()
-
-    return render(request, 'transactions/cash_out_list.html', {
-        'expenses': expenses,
-        'projects': projects,
-        'selected_project': selected_project,
-    })
-
-@login_required
-def cash_out_add(request):
-    if request.method == 'POST':
-        form = ExpenseForm(request.POST, request.FILES)  # reuse expense form with categories
-        if form.is_valid():
-            expense = form.save(commit=False)
-            expense.type = Transaction.Type.EXPENSE
-            expense.added_by = request.user
-            expense.save()
-            messages.success(request, 'Cash OUT recorded successfully.')
-            return redirect('cash_out_list')
+    transaction = get_object_or_404(Transaction, pk=pk)
+    # Choose correct form based on type
+    if transaction.type == Transaction.Type.INCOME:
+        form_class = IncomeForm
+        cancel_url = reverse('cash_in_list')
     else:
-        form = ExpenseForm()
+        form_class = ExpenseForm
+        cancel_url = reverse('cash_out_list')
+
+    if request.method == 'POST':
+        form = form_class(request.POST, request.FILES, instance=transaction)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Transaction updated successfully.')
+            return redirect(cancel_url)
+    else:
+        form = form_class(instance=transaction)
+
     return render(request, 'transactions/cash_form.html', {
         'form': form,
-        'title': 'Add Cash OUT',
-        'action_url': 'cash_out_add',
+        'title': 'Edit Transaction',
+        'cancel_url': cancel_url,
+    })
+
+
+@login_required
+def transaction_delete(request, pk):
+    if not (request.user.is_admin() or request.user.is_superuser):
+        raise PermissionDenied
+
+    transaction = get_object_or_404(Transaction, pk=pk)
+    if transaction.type == Transaction.Type.INCOME:
+        cancel_url = reverse('cash_in_list')
+    else:
+        cancel_url = reverse('cash_out_list')
+
+    if request.method == 'POST':
+        transaction.delete()
+        messages.success(request, 'Transaction deleted.')
+        return redirect(cancel_url)
+
+    return render(request, 'transactions/transaction_confirm_delete.html', {
+        'transaction': transaction,
+        'cancel_url': cancel_url,
     })
