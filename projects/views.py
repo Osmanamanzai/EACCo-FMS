@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -14,8 +15,10 @@ def project_list(request):
     return render(request, 'projects/project_list.html', {'projects': projects})
 
 @login_required
-@user_passes_test(is_admin)
 def project_create(request):
+    if not request.user.is_admin():
+        raise PermissionDenied
+
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
@@ -29,10 +32,11 @@ def project_create(request):
     else:
         form = ProjectForm()
     return render(request, 'projects/project_form.html', {'form': form, 'title': 'Add New Project'})
-
 @login_required
-@user_passes_test(is_admin)
 def project_update(request, pk):
+    if not request.user.is_admin():
+        raise PermissionDenied
+
     project = get_object_or_404(Project, pk=pk)
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
@@ -43,17 +47,17 @@ def project_update(request, pk):
     else:
         form = ProjectForm(instance=project)
     return render(request, 'projects/project_form.html', {'form': form, 'title': 'Edit Project'})
-
 @login_required
-@user_passes_test(is_admin)
 def project_delete(request, pk):
+    if not request.user.is_admin():
+        raise PermissionDenied
+
     project = get_object_or_404(Project, pk=pk)
     if request.method == 'POST':
         project.delete()
         messages.success(request, 'Project deleted.')
         return redirect('project_list')
     return render(request, 'projects/project_confirm_delete.html', {'project': project})
-
 @login_required
 def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)

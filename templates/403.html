@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Access Denied - EACCo{% endblock %}
+{% block content %}
+<div class="panel" style="max-width:500px; margin: 40px auto; text-align:center;">
+    <div class="panel-header"><span class="panel-dot"></span> Access Denied</div>
+    <p style="margin: 20px 0;">You do not have permission to perform this action.</p>
+    <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to Dashboard</a>
+</div>
+{% endblock %}
