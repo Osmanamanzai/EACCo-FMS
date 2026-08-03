@@ -1,22 +1,25 @@
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
+from django.db.models import Sum
 from .models import Project
 from .forms import ProjectForm, ProjectDocumentForm
-from django.db.models import Sum
 
 def is_admin(user):
     return user.is_admin()
+
 
 @login_required
 def project_list(request):
     projects = Project.objects.all()
     return render(request, 'projects/project_list.html', {'projects': projects})
 
+
 @login_required
 def project_create(request):
-    if not request.user.is_admin():
+    # Allow both admins (role) and superusers
+    if not (request.user.is_admin() or request.user.is_superuser):
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -32,9 +35,12 @@ def project_create(request):
     else:
         form = ProjectForm()
     return render(request, 'projects/project_form.html', {'form': form, 'title': 'Add New Project'})
+
+
 @login_required
 def project_update(request, pk):
-    if not request.user.is_admin():
+    # Allow both admins (role) and superusers
+    if not (request.user.is_admin() or request.user.is_superuser):
         raise PermissionDenied
 
     project = get_object_or_404(Project, pk=pk)
@@ -47,9 +53,12 @@ def project_update(request, pk):
     else:
         form = ProjectForm(instance=project)
     return render(request, 'projects/project_form.html', {'form': form, 'title': 'Edit Project'})
+
+
 @login_required
 def project_delete(request, pk):
-    if not request.user.is_admin():
+    # Allow both admins (role) and superusers
+    if not (request.user.is_admin() or request.user.is_superuser):
         raise PermissionDenied
 
     project = get_object_or_404(Project, pk=pk)
@@ -58,6 +67,8 @@ def project_delete(request, pk):
         messages.success(request, 'Project deleted.')
         return redirect('project_list')
     return render(request, 'projects/project_confirm_delete.html', {'project': project})
+
+
 @login_required
 def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -66,9 +77,10 @@ def project_detail(request, pk):
     # Calculate financial totals
     total_income = project.transactions.filter(type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
     total_expense = project.transactions.filter(type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
-    profit = total_income - total_expense  # or use budget - total_expense, depending on your logic
+    profit = total_income - total_expense
 
-    if request.method == 'POST' and is_admin(request.user):
+    # Document upload – only admins/superusers can upload
+    if request.method == 'POST' and (request.user.is_admin() or request.user.is_superuser):
         doc_form = ProjectDocumentForm(request.POST, request.FILES)
         if doc_form.is_valid():
             doc = doc_form.save(commit=False)
@@ -85,7 +97,7 @@ def project_detail(request, pk):
         'project': project,
         'documents': documents,
         'doc_form': doc_form,
-        'is_admin': is_admin(request.user),
+        'is_admin': request.user.is_admin() or request.user.is_superuser,  # show upload button if admin/superuser
         'total_income': total_income,
         'total_expense': total_expense,
         'profit': profit,
