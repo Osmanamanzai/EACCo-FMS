@@ -1,15 +1,15 @@
-from django.core.exceptions import PermissionDenied
-from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
+from django.urls import reverse
 from projects.models import Project
 from .models import Transaction
 from .forms import ExpenseForm, IncomeForm
 
+
 @login_required
 def expense_list(request):
-    # Get filter parameters
     project_id = request.GET.get('project', '')
     projects = Project.objects.all()
     expenses = Transaction.objects.filter(type=Transaction.Type.EXPENSE)
@@ -25,6 +25,7 @@ def expense_list(request):
         'projects': projects,
         'selected_project': selected_project,
     })
+
 
 @login_required
 def expense_add(request):
@@ -60,6 +61,7 @@ def cash_in_list(request):
         'selected_project': selected_project,
     })
 
+
 @login_required
 def cash_in_add(request):
     if request.method == 'POST':
@@ -76,17 +78,54 @@ def cash_in_add(request):
     return render(request, 'transactions/cash_form.html', {
         'form': form,
         'title': 'Add Cash IN',
-        'action_url': 'cash_in_add',
     })
 
+
 # ---------- Cash OUT views ----------
+@login_required
+def cash_out_list(request):
+    project_id = request.GET.get('project', '')
+    projects = Project.objects.all()
+    expenses = Transaction.objects.filter(type=Transaction.Type.EXPENSE)
+
+    selected_project = None
+    if project_id:
+        expenses = expenses.filter(project_id=project_id)
+        selected_project = Project.objects.filter(pk=project_id).first()
+
+    return render(request, 'transactions/cash_out_list.html', {
+        'expenses': expenses,
+        'projects': projects,
+        'selected_project': selected_project,
+    })
+
+
+@login_required
+def cash_out_add(request):
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST, request.FILES)
+        if form.is_valid():
+            expense = form.save(commit=False)
+            expense.type = Transaction.Type.EXPENSE
+            expense.added_by = request.user
+            expense.save()
+            messages.success(request, 'Cash OUT recorded successfully.')
+            return redirect('cash_out_list')
+    else:
+        form = ExpenseForm()
+    return render(request, 'transactions/cash_form.html', {
+        'form': form,
+        'title': 'Add Cash OUT',
+    })
+
+
+# ---------- EDIT & DELETE (Admin only) ----------
 @login_required
 def transaction_update(request, pk):
     if not (request.user.is_admin() or request.user.is_superuser):
         raise PermissionDenied
 
     transaction = get_object_or_404(Transaction, pk=pk)
-    # Choose correct form based on type
     if transaction.type == Transaction.Type.INCOME:
         form_class = IncomeForm
         cancel_url = reverse('cash_in_list')
