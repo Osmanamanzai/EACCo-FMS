@@ -1,11 +1,11 @@
 :root {
-    --clr-light: #B6B6B4;
-    --clr-mid: #6c6c6a;
-    --clr-dark-mid: #3b3b3a;
-    --clr-dark: #1d1d1d;
-    --clr-bg: #f4f4f2;
-    --clr-white: #ffffff;
-    --font-main: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    --dark-bg: #0f0f12;
+    --card-bg: rgba(255, 255, 255, 0.07);
+    --card-border: rgba(255, 255, 255, 0.12);
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --accent: #e8c84a;  /* gold accent – construction feel */
+    --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 * {
@@ -14,210 +14,217 @@
     box-sizing: border-box;
 }
 
-/* Full-page background and layout */
 body {
-    font-family: var(--font-main);
-    background: var(--clr-dark);
+    font-family: var(--font);
+    background: linear-gradient(135deg, #0f0f12 0%, #1a1a2e 100%);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    color: var(--clr-dark);
-}
-
-.login-page {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* ---------- Login Card (unchanged) ---------- */
-.login-container {
-    flex: 1;                         /* takes available space above welcome */
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    color: var(--text-primary);
+    overflow-x: hidden;
 }
 
-.login-card {
-    background: var(--clr-white);
-    border-radius: 12px;
-    padding: 40px 32px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--clr-dark-mid);
+.login-page {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
+    padding: 30px 20px;
+    position: relative;
 }
 
-.branding {
+/* ----- Floating background shapes ----- */
+.bg-shapes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.bg-shapes span {
+    position: absolute;
+    background: rgba(232, 200, 74, 0.08);
+    border-radius: 50%;
+    filter: blur(60px);
+}
+.bg-shapes span:nth-child(1) {
+    width: 300px; height: 300px;
+    top: -100px; left: -50px;
+}
+.bg-shapes span:nth-child(2) {
+    width: 200px; height: 200px;
+    bottom: 20px; right: -80px;
+}
+.bg-shapes span:nth-child(3) {
+    width: 250px; height: 250px;
+    top: 50%; left: 80%;
+}
+.bg-shapes span:nth-child(4) {
+    width: 180px; height: 180px;
+    bottom: 40%; left: 10%;
+}
+
+/* ----- Glassmorphism Login Card ----- */
+.login-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 40px 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+    z-index: 2;
+    position: relative;
     text-align: center;
-    margin-bottom: 36px;
+}
+
+.login-branding {
+    margin-bottom: 30px;
 }
 
 .logo {
-    font-size: 2.6rem;
+    font-size: 2.8rem;
     font-weight: 800;
-    color: var(--clr-dark);
-    letter-spacing: -0.03em;
-    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #e8c84a, #f5d76e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .brand-name {
     font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--clr-dark-mid);
-    letter-spacing: 0.02em;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 6px;
 }
 
 .brand-sub {
     font-size: 0.7rem;
-    color: var(--clr-mid);
+    color: #7e7e7e;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     margin-top: 4px;
 }
 
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
+    text-align: left;
 }
 
 .input-group label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: var(--clr-dark-mid);
+    color: var(--text-secondary);
     margin-bottom: 6px;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.03em;
 }
 
 .input-group input {
     width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #d1d1cf;
-    border-radius: 6px;
+    padding: 12px 15px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
     font-size: 0.95rem;
-    font-family: var(--font-main);
-    background: #fbfbfa;
-    transition: border 0.2s, box-shadow 0.2s;
-}
-
-.input-group input:focus {
+    color: #fff;
     outline: none;
-    border-color: var(--clr-mid);
-    box-shadow: 0 0 0 3px rgba(108, 108, 106, 0.15);
+    transition: border 0.25s, background 0.25s;
+}
+.input-group input::placeholder {
+    color: #7e7e7e;
+}
+.input-group input:focus {
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.1);
 }
 
 .btn-login {
     width: 100%;
     padding: 13px;
-    background: var(--clr-dark);
-    color: #ffffff;
+    background: var(--accent);
+    color: #0f0f12;
     border: none;
-    border-radius: 6px;
-    font-size: 0.95rem;
+    border-radius: 8px;
+    font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.03em;
     cursor: pointer;
-    transition: background 0.25s;
-    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.25s, transform 0.15s;
+    margin-top: 10px;
 }
-
 .btn-login:hover {
-    background: #000000;
+    background: #f5d76e;
+    transform: translateY(-1px);
+}
+.btn-login i {
+    font-size: 0.9rem;
 }
 
 .error-message {
-    background: #fbe9e7;
-    color: #b84c3b;
-    padding: 10px 14px;
-    border-radius: 6px;
-    font-size: 0.82rem;
+    background: rgba(255, 80, 80, 0.15);
+    border: 1px solid rgba(255, 80, 80, 0.3);
+    color: #ff5e5e;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
     margin-bottom: 20px;
     text-align: center;
-    border-left: 3px solid #b84c3b;
 }
 
-.footer-note {
-    text-align: center;
-    font-size: 0.7rem;
-    color: var(--clr-mid);
-    margin-top: 28px;
-}
-
-/* ---------- Welcome Section (new) ---------- */
-.welcome-section {
-    position: relative;
-    background: linear-gradient(135deg, #2b2b2b 0%, #1a1a1a 100%);
-    border-top: 2px solid var(--clr-dark-mid);
-    padding: 40px 20px;
-    text-align: center;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.welcome-content {
+/* ----- Welcome Banner (bottom) ----- */
+.welcome-banner {
     position: relative;
     z-index: 2;
-    max-width: 500px;
-    margin: 0 auto;
+    text-align: center;
+    padding: 25px 10px;
 }
 
-.welcome-icon {
-    margin-bottom: 20px;
+.welcome-line {
+    width: 60px;
+    height: 3px;
+    background: var(--accent);
+    margin: 0 auto 20px auto;
+    border-radius: 2px;
 }
 
-.welcome-title {
-    font-size: 1rem;
+.welcome-banner h2 {
+    font-size: 1.1rem;
     font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--clr-light);
+    color: var(--text-secondary);
     margin-bottom: 8px;
+    letter-spacing: 0.03em;
 }
 
-.welcome-company {
-    font-size: 1.8rem;
+.welcome-banner h2 span {
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 8px;
-    line-height: 1.2;
+    display: block;
+    font-size: 1.3rem;
+    margin-top: 2px;
 }
 
-.welcome-sub {
-    font-size: 0.85rem;
-    color: var(--clr-mid);
+.welcome-tagline {
+    font-size: 0.8rem;
+    color: #7e7e7e;
     font-style: italic;
+    margin-top: 6px;
 }
 
-/* Decorative background pattern (diagonal lines) */
-.welcome-pattern {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image:
-        repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 10px,
-            rgba(255,255,255,0.02) 10px,
-            rgba(255,255,255,0.02) 20px
-        ),
-        repeating-linear-gradient(
-            -45deg,
-            transparent,
-            transparent 10px,
-            rgba(255,255,255,0.02) 10px,
-            rgba(255,255,255,0.02) 20px
-        );
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Small screens: adjust font sizes */
-@media (max-width: 480px) {
-    .welcome-company {
-        font-size: 1.4rem;
+/* Responsive adjustments */
+@media (max-width: 400px) {
+    .login-card {
+        padding: 30px 20px;
+    }
+    .welcome-banner h2 span {
+        font-size: 1.1rem;
     }
 }
